@@ -1,44 +1,62 @@
-// Returns LCM of arr[0..n-1]
-unsigned long long int LCM(int arr[], int n)
+#include<bits/stdc++.h>
+#include <iostream>
+#define maxlongint 1000000000000000000 
+using namespace std;
+typedef unsigned long long int ll;
+
+// Utility function to find GCD of 'a' and 'b'
+int gcd(ll a, ll b)
+
 {
-    // Find the maximum value in arr[]
-    int max_num = 0;
-    for (int i=0; i<n; i++)
-        if (max_num < arr[i])
-            max_num = arr[i];
- 
-    // Initialize result
-    unsigned long long int res = 1;
- 
-    // Find all factors that are present in
-    // two or more array elements.
-    int x = 2;  // Current factor.
-    while (x <= max_num)
-    {
-        // To store indexes of all array
-        // elements that are divisible by x.
-        vector<int> indexes;
-        for (int j=0; j<n; j++)
-            if (arr[j]%x == 0)
-                indexes.push_back(j);
- 
-        // If there are 2 or more array elements
-        // that are divisible by x.
-        if (indexes.size() >= 2)
+        if (b==0)
+                return a;
+        return gcd(b, a%b);
+}
+
+// Returns LCM of array elements
+ll findlcm(int arr[], int n,int k)
+{
+        // Initialize result
+        ll ans;
+        if (k==0) {ans=arr[1];}
+        else {  ans = arr[0]; }
+
+        // ans contains LCM of arr[0],..arr[i]
+        // after i'th iteration,
+        for (int i=1; i<n; i++)
+                if(k==i || (k==0 && i==1))  continue;
+                else   ans = ( ((arr[i]*ans)) /
+                                (gcd(arr[i], ans)) );
+
+        return ans;
+}
+int main(int argc,char* argv[])
+{
+        ifstream infile;
+        infile.open(argv[1]);
+        int n;
+        infile >> n;
+        int i,j=0;
+        int a[n];
+//      unsigned long long int r[n+1];
+        for(i=0; i<n; i++)
+                infile>> a[i];
+        unsigned long long int r,rmin=maxlongint;
+        for(i=0;i<n+1;i++)
         {
-            // Reduce all array elements divisible
-            // by x.
-            for (int j=0; j<indexes.size(); j++)
-                arr[indexes[j]] = arr[indexes[j]]/x;
- 
-            res = res * x;
+                r=findlcm(a,n,i);
+
+                if(r<=rmin) {rmin=r;
+                j=i+1;
+         }
         }
-        else
-            x++;
-    }
- 
-    // Then multiply all reduced array elements
-    for (int i=0; i<n; i++)
-        res = res*arr[i];
- 
-    return res;
+        if(j==n+1) j=0;
+        cout<<rmin<<" " <<j<<endl;
+        /*sorting R and pick minimum
+          sort(r,r+n+1);
+          for(i=0; i<n+1; i++)
+          cout<<r[i]<<endl; */
+          return 0;
+
+
+}
